@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="rplidar">
+    <link name="base">
+      <pose>0 0 0.0204 0 0 0</pose>
+      <inertial>
+        <mass>0.19</mass>
+        <inertia>
+          <ixx>0.001087473</ixx>
+          <iyy>0.001087473</iyy>
+          <izz>0.001092437</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <collision name="base_collision">
+        <geometry>
+          <cylinder>
+            <radius>.03785</radius>
+            <length>.04080</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    <visual name="base_visual">
+      <geometry>
+        <cylinder>
+          <radius>.03785</radius>
+          <length>.04080</length>
+        </cylinder>
+      </geometry>
+    </visual>
+
+      <sensor type="ray" name="sensor">
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>true</visualize>
+        <update_rate>10</update_rate>
+        <ray>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.02</stddev>
+          </noise>
+
+          <scan>
+            <horizontal>
+              <samples>400</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.1415</min_angle>
+              <max_angle>3.1415</max_angle>
+            </horizontal>
+          </scan>
+
+          <range>
+            <min>0.15</min>
+            <max>6</max>
+            <resolution>0.01</resolution>
+          </range>
+        </ray>
+      <plugin name="gazebo_ros_rplidar_controller" filename="libgazebo_ros_laser.so">
+        <topicName>/rplidar/scan</topicName>
+        <frameName>base</frameName>
+      </plugin>
+
+      </sensor>
+    </link>
+
+  </model>
+</sdf>
