@@ -172,6 +172,7 @@ class GazeboMavlinkInterface : public ModelPlugin {
   transport::SubscriberPtr imu_sub_;
   transport::SubscriberPtr lidar_sub_;
   transport::SubscriberPtr opticalFlow_sub_;
+  transport::PublisherPtr gps_pub_;
   std::string imu_sub_topic_;
   std::string lidar_sub_topic_;
   std::string opticalFlow_sub_topic_;
@@ -186,7 +187,7 @@ class GazeboMavlinkInterface : public ModelPlugin {
 
   math::Vector3 gravity_W_;
   math::Vector3 velocity_prev_W_;
-  math::Vector3 mag_W_;
+  math::Vector3 mag_d_;
 
   std::default_random_engine random_generator_;
   std::normal_distribution<float> standard_normal_distribution_;
