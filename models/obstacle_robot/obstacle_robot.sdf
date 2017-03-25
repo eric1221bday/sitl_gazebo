@@ -1,0 +1,70 @@
+<sdf version='1.5'>
+  <model name="obstacle_robot">
+    <link name="cylinder_base">
+      <pose>0 0 2.5 0 0 0</pose>
+      <inertial>
+        <pose>0 0 2.5 0 0 0</pose>
+        <mass>0</mass>
+        <inertia>
+          <ixx>0</ixx>
+          <iyy>0</iyy>
+          <izz>0</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <collision name="base_collision">
+        <pose>0 0 2.5 0 0 0</pose>
+        <geometry>
+          <cylinder>
+             <radius> .04 </radius>
+             <length> 2 </length>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+    <visual name="base_visual">
+      <pose>0 0 2.5 0 0 0</pose>
+      <geometry>
+        <cylinder>
+             <radius> .04 </radius>
+             <length> 2 </length>
+        </cylinder>
+      </geometry>
+    </visual>
+    </link>
+
+    <include>
+      <uri>model://create</uri>
+      <name>robot<\name>
+    </include>
+
+    <joint name="cylinder_joint" type="fixed">
+      <child>cylinder_base</child>
+      <parent>robot::base</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <upper>0</upper>
+          <lower>0</lower>
+        </limit>
+      </axis>
+      <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+    </joint>
+
+
+
+  </model>
+</sdf>

@@ -1,0 +1,27 @@
+<sdf version='1.5'>
+  <model name='obstacle_robot'>
+
+    <include>
+      <uri>model://create/model.sdf</uri>
+    </include>
+
+    <include>
+      <uri>model://iRobot_cylinder</uri>
+      <pose>0 0 0.05 0 0 0</pose>
+    </include>
+    <joint name="cylinder_joint" type="fixed">
+      <child>cylinder_joint::base</child>
+      <parent>create/model.sdf::base_link</parent>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <upper>0</upper>
+          <lower>0</lower>
+        </limit>
+      </axis>
+    </joint>
+
+
+
+  </model>
+</sdf>
