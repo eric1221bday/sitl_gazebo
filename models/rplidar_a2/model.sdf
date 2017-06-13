@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
-  <model name="rplidar">
+  <model name="rplidar_a2">
     <link name="base">
-      <pose>0 0 0.0204 0 0 0</pose>
       <inertial>
+        <pose>0 0 0 0 0 0</pose>
         <mass>0.19</mass>
         <inertia>
           <ixx>0.001087473</ixx>
@@ -14,25 +14,25 @@
           <iyz>0</iyz>
         </inertia>
       </inertial>
+      <visual name="base_visual">
+        <geometry>
+          <mesh>
+            <uri>model://rplidar_a2/meshes/rplidar-a2m4-r1.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>Gazebo/Black</script>
+        </material>
+      </visual>
       <collision name="base_collision">
         <geometry>
-          <cylinder>
-            <radius>.03785</radius>
-            <length>.04080</length>
-          </cylinder>
+          <box>
+             <size> .02 .02 .02 </size>
+          </box>
         </geometry>
       </collision>
-    <visual name="base_visual">
-      <geometry>
-        <cylinder>
-          <radius>.03785</radius>
-          <length>.04080</length>
-        </cylinder>
-      </geometry>
-    </visual>
-
-      <sensor type="ray" name="sensor">
-        <pose>0 0 0 0 0 0</pose>
+      <sensor type="gpu_ray" name="sensor">
+        <pose>0 0 0.01 0 0 0</pose>
         <visualize>true</visualize>
         <update_rate>10</update_rate>
         <ray>
@@ -54,12 +54,17 @@
           <range>
             <min>0.15</min>
             <max>6</max>
-            <resolution>0.01</resolution>
+            <resolution>0.05</resolution>
           </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
         </ray>
-      <plugin name="gazebo_ros_rplidar_controller" filename="libgazebo_ros_laser.so">
-        <topicName>/rplidar/scan</topicName>
-        <frameName>base</frameName>
+      <plugin name="gazebo_ros_rplidar_controller" filename="libgazebo_ros_gpu_laser.so">
+        <topicName>/scan</topicName>
+        <frameName>laser</frameName>
       </plugin>
 
       </sensor>

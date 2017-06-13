@@ -5,3 +5,5 @@ build/
 models/iris/*.sdf
 *.pyc
 .*.sw?
+.idea/
+cmake-build-debug/

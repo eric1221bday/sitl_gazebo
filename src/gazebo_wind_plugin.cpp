@@ -22,7 +22,7 @@
 
 #include "gazebo_wind_plugin.h"
 #include "common.h"
-#include "Wind.pb.h"
+#include "RotorWind.pb.h"
 
 namespace gazebo {
 

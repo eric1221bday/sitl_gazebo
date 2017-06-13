@@ -173,7 +173,7 @@ set (msgs
   msgs/lidar.proto
   msgs/CommandMotorSpeed.proto
   msgs/MotorSpeed.proto
-  msgs/Wind.proto
+  msgs/RotorWind.proto
   msgs/sonarSens.proto
 )
 PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ${msgs})
