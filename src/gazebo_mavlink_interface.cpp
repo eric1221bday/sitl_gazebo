@@ -19,8 +19,11 @@
  */
 
 
+#include "common.h"
 #include "gazebo_mavlink_interface.h"
 #include "geo_mag_declination.h"
+#include <cstdlib>
+#include <string>
 
 namespace gazebo {
 
@@ -29,14 +32,17 @@ namespace gazebo {
 // Seattle downtown (15 deg declination): 47.592182, -122.316031, 86m
 // Moscow downtown: 55.753395, 37.625427, 155m
 
+// The home position can be specified using the environment variables:
+// PX4_HOME_LAT, PX4_HOME_LON, and PX4_HOME_ALT
+
 // Zurich Irchel Park
-static const double lat_zurich = 47.397742 * M_PI / 180;  // rad
-static const double lon_zurich = 8.545594 * M_PI / 180;  // rad
-static const double alt_zurich = 488.0; // meters
+static double lat_home = 47.397742 * M_PI / 180;  // rad
+static double lon_home = 8.545594 * M_PI / 180;  // rad
+static double alt_home = 488.0; // meters
 // Seattle downtown (15 deg declination): 47.592182, -122.316031
-// static const double lat_zurich = 47.592182 * M_PI / 180;  // rad
-// static const double lon_zurich = -122.316031 * M_PI / 180;  // rad
-// static const double alt_zurich = 86.0; // meters
+// static const double lat_home = 47.592182 * M_PI / 180;  // rad
+// static const double lon_home = -122.316031 * M_PI / 180;  // rad
+// static const double alt_home = 86.0; // meters
 static const float earth_radius = 6353000;  // m
 
 
@@ -51,6 +57,24 @@ void GazeboMavlinkInterface::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf
   model_ = _model;
 
   world_ = model_->GetWorld();
+
+  // Use environment variables if set for home position.
+  const char *env_lat = std::getenv("PX4_HOME_LAT");
+  const char *env_lon = std::getenv("PX4_HOME_LON");
+  const char *env_alt = std::getenv("PX4_HOME_ALT");
+
+  if (env_lat) {
+    gzmsg << "Home latitude is set to " << env_lat << ".\n";
+    lat_home = std::stod(env_lat) * M_PI / 180.0;
+  }
+  if (env_lon) {
+    gzmsg << "Home longitude is set to " << env_lon << ".\n";
+    lon_home = std::stod(env_lon) * M_PI / 180.0;
+  }
+  if (env_alt) {
+    gzmsg << "Home altitude is set to " << env_alt << ".\n";
+    alt_home = std::stod(env_alt);
+  }
 
   namespace_.clear();
   if (_sdf->HasElement("robotNamespace")) {
@@ -68,6 +92,7 @@ void GazeboMavlinkInterface::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf
   getSdfParam<std::string>(_sdf, "lidarSubTopic", lidar_sub_topic_, lidar_sub_topic_);
   getSdfParam<std::string>(_sdf, "opticalFlowSubTopic",
       opticalFlow_sub_topic_, opticalFlow_sub_topic_);
+  getSdfParam<std::string>(_sdf, "sonarSubTopic", sonar_sub_topic_, sonar_sub_topic_);
 
   // set input_reference_ from inputs.control
   input_reference_.resize(n_out_max);
@@ -403,7 +428,8 @@ void GazeboMavlinkInterface::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf
   imu_sub_ = node_handle_->Subscribe("~/" + model_->GetName() + imu_sub_topic_, &GazeboMavlinkInterface::ImuCallback, this);
   lidar_sub_ = node_handle_->Subscribe("~/" + model_->GetName() + lidar_sub_topic_, &GazeboMavlinkInterface::LidarCallback, this);
   opticalFlow_sub_ = node_handle_->Subscribe("~/" + model_->GetName() + opticalFlow_sub_topic_, &GazeboMavlinkInterface::OpticalFlowCallback, this);
-  
+  sonar_sub_ = node_handle_->Subscribe("~/" + model_->GetName() + sonar_sub_topic_, &GazeboMavlinkInterface::SonarCallback, this);
+
   // Publish gazebo's motor_speed message
   motor_velocity_reference_pub_ = node_handle_->Advertise<mav_msgs::msgs::CommandMotorSpeed>("~/" + model_->GetName() + motor_velocity_reference_pub_topic_, 1);
 
@@ -480,7 +506,7 @@ void GazeboMavlinkInterface::OnUpdate(const common::UpdateInfo& /*_info*/) {
 
   handle_control(dt);
 
-  if(received_first_referenc_) {
+  if (received_first_referenc_) {
 
     mav_msgs::msgs::CommandMotorSpeed turning_velocities_msg;
 
@@ -518,11 +544,11 @@ void GazeboMavlinkInterface::OnUpdate(const common::UpdateInfo& /*_info*/) {
   double sin_c = sin(c);
   double cos_c = cos(c);
   if (c != 0.0) {
-    lat_rad = asin(cos_c * sin(lat_zurich) + (x_rad * sin_c * cos(lat_zurich)) / c);
-    lon_rad = (lon_zurich + atan2(y_rad * sin_c, c * cos(lat_zurich) * cos_c - x_rad * sin(lat_zurich) * sin_c));
+    lat_rad = asin(cos_c * sin(lat_home) + (x_rad * sin_c * cos(lat_home)) / c);
+    lon_rad = (lon_home + atan2(y_rad * sin_c, c * cos(lat_home) * cos_c - x_rad * sin(lat_home) * sin_c));
   } else {
-   lat_rad = lat_zurich;
-    lon_rad = lon_zurich;
+    lat_rad = lat_home;
+    lon_rad = lon_home;
   }
 
   if (current_time.Double() - last_gps_time_.Double() > gps_update_interval_) {  // 5Hz
@@ -532,14 +558,17 @@ void GazeboMavlinkInterface::OnUpdate(const common::UpdateInfo& /*_info*/) {
     hil_gps_msg.fix_type = 3;
     hil_gps_msg.lat = lat_rad * 180 / M_PI * 1e7;
     hil_gps_msg.lon = lon_rad * 180 / M_PI * 1e7;
-    hil_gps_msg.alt = (pos_W_I.z + alt_zurich) * 1000;
+    hil_gps_msg.alt = (pos_W_I.z + alt_home) * 1000;
     hil_gps_msg.eph = 100;
     hil_gps_msg.epv = 100;
     hil_gps_msg.vel = velocity_current_W_xy.GetLength() * 100;
     hil_gps_msg.vn = velocity_current_W.y * 100;
     hil_gps_msg.ve = velocity_current_W.x * 100;
     hil_gps_msg.vd = -velocity_current_W.z * 100;
-    hil_gps_msg.cog = atan2(hil_gps_msg.ve, hil_gps_msg.vn) * 180.0/3.1416 * 100.0;
+    // MAVLINK_HIL_GPS_T CoG is [0, 360]. math::Angle::Normalize() is [-pi, pi].
+    math::Angle cog(atan2(velocity_current_W.x, velocity_current_W.y));
+    cog.Normalize();
+    hil_gps_msg.cog = static_cast<uint16_t>(GetDegrees360(cog) * 100.0);
     hil_gps_msg.satellites_visible = 10;
 
     send_mavlink_message(MAVLINK_MSG_ID_HIL_GPS, &hil_gps_msg, 200);
@@ -717,7 +746,7 @@ void GazeboMavlinkInterface::ImuCallback(ImuPtr& imu_message) {
 
   hil_state_quat.lat = lat_rad * 180 / M_PI * 1e7;
   hil_state_quat.lon = lon_rad * 180 / M_PI * 1e7;
-  hil_state_quat.alt = (-pos_n.z + alt_zurich) * 1000;
+  hil_state_quat.alt = (-pos_n.z + alt_home) * 1000;
 
   hil_state_quat.vx = vel_n.x * 100;
   hil_state_quat.vy = vel_n.y * 100;
@@ -769,6 +798,22 @@ void GazeboMavlinkInterface::OpticalFlowCallback(OpticalFlowPtr& opticalFlow_mes
   sensor_msg.distance = optflow_distance;
 
   send_mavlink_message(MAVLINK_MSG_ID_HIL_OPTICAL_FLOW, &sensor_msg, 200);
+}
+
+void GazeboMavlinkInterface::SonarCallback(SonarSensPtr& sonar_message) {
+  mavlink_distance_sensor_t sensor_msg;
+  sensor_msg.time_boot_ms = sonar_message->time_msec();
+  sensor_msg.min_distance = sonar_message->min_distance() * 100.0;
+  sensor_msg.max_distance = sonar_message->max_distance() * 100.0;
+  sensor_msg.current_distance = sonar_message->current_distance() * 100.0;
+  sensor_msg.type = 1;
+  sensor_msg.id = 1;
+
+  // to to pitch 90 (forward facing)
+  sensor_msg.orientation = 24;
+  sensor_msg.covariance = 0;
+
+  send_mavlink_message(MAVLINK_MSG_ID_DISTANCE_SENSOR, &sensor_msg, 200);
 }
 
 /*ssize_t GazeboMavlinkInterface::receive(void *_buf, const size_t _size, uint32_t _timeoutMs)
@@ -865,7 +910,7 @@ void GazeboMavlinkInterface::handle_control(double _dt)
           double err = current - target;
           double force = pids_[i].Update(err, _dt);
           joints_[i]->SetForce(0, force);
-          // gzerr << "chan[" << i << "] curr[" << current
+          // gzdbg << "chan[" << i << "] curr[" << current
           //       << "] cmd[" << target << "] f[" << force
           //       << "] scale[" << input_scaling_[i] << "]\n";
         }
