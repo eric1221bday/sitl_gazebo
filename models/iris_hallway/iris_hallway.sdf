@@ -17,7 +17,7 @@
 
     <include>
       <uri>model://terarangerone</uri>
-      <pose>0 0 -0.04 0 3.1415 0</pose>
+      <pose>0.05 0.05 -0.04 0 3.1415 0</pose>
     </include>
     <joint name="teraranger_joint" type="revolute">
       <child>terarangerone::link</child>
@@ -31,15 +31,15 @@
       </axis>
     </joint>
 
-    <!--<include>
-      <uri> model://camera </uri>
-      <pose> 0 0 -.032 0 1.5707 0 </pose>
+    <include>
+      <uri> model://astra </uri>
+      <pose> 0.1 0.03 0.01 -1.5708 3.1415 -1.5708 </pose>
     </include>
-    <joint name="camera_joint" type="fixed">
-       <axis xyz="0 0 1" />
-       <child>camera::base</child>
+    <joint name="astra_joint" type="fixed">
+       <axis xyz="1 0 0" />
+       <child>astra::base</child>
        <parent>iris::base_link</parent>
-    </joint>-->
+    </joint>
 
   </model>
 </sdf>

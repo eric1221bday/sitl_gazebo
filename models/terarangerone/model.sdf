@@ -3,7 +3,7 @@
   <model name="terarangerone">
     <link name="link">
       <inertial>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 0 0 0</pose>
         <mass>0.008</mass>
         <inertia>
           <ixx>2.1733e-6</ixx>
@@ -21,11 +21,14 @@
           </mesh>
         </geometry>
         <material>
-          <script>Gazebo/Black</script>
+          <script>
+            <name>Gazebo/Yellow</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
         </material>
       </visual>
       <sensor name="laser" type="ray">
-        <pose>0 0 0 0 -1.570896 0</pose>
+        <pose>0 0 0.02 0 -1.570896 0</pose>
         <update_rate>100</update_rate>
         <ray>
           <scan>
@@ -37,7 +40,7 @@
             </horizontal>
           </scan>
           <range>
-            <min>0.06</min>
+            <min>0.2</min>
             <max>14</max>
             <resolution>0.01</resolution>
           </range>
@@ -54,7 +57,7 @@
 
         <plugin name="gazebo_ros_teraranger_controller" filename="libgazebo_ros_laser.so">
           <topicName>/terarangerone_sim</topicName>
-          <frameName>base</frameName>
+          <frameName>base_range</frameName>
         </plugin>
       </sensor>
     </link>

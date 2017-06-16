@@ -21,7 +21,10 @@
           </mesh>
         </geometry>
         <material>
-          <script>Gazebo/Black</script>
+          <script>
+            <name>Gazebo/FlatBlack</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
         </material>
       </visual>
       <collision name="base_collision">

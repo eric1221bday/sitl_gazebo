@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+    <model name="astra">
+        <link name="base">
+            <pose>0 0 0 0 0 0</pose>
+            <inertial>
+                <mass>0.19</mass>
+                <inertia>
+                    <ixx>0.001087473</ixx>
+                    <iyy>0.001087473</iyy>
+                    <izz>0.001092437</izz>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyz>0</iyz>
+                </inertia>
+            </inertial>
+            <collision name="base_collision">
+                <geometry>
+                    <box>
+                        <size> .02 .02 .02 </size>
+                    </box>
+                </geometry>
+            </collision>
+            <visual name="base_visual">
+                <geometry>
+                    <mesh>
+                        <uri>model://astra/meshes/astra.stl</uri>
+                        <scale>0.001 0.001 0.001</scale>
+                    </mesh>
+                </geometry>
+                <material>
+                    <script>
+                        <name>Gazebo/FlatBlack</name>
+                        <uri>file://media/materials/scripts/gazebo.material</uri>
+                    </script>
+                </material>
+            </visual>
+            <sensor name="sensor_camera" type="depth">
+                <pose>0.0 0.0 0.0 -1.5708 -1.5708 0.0</pose>
+                    <camera>
+                        <horizontal_fov>1.0472</horizontal_fov>
+                        <image>
+                            <width>640</width>
+                            <height>480</height>
+                            <format>R8G8B8</format>
+                        </image>
+                        <clip near="0.01" far="100.0" />
+                        <save enabled="false" path="/tmp" />
+                        <depth_camera output="points" />
+                    </camera>
+                    <plugin name="astra_depth" filename="libgazebo_ros_depth_camera.so">
+                        <alwaysOn>1</alwaysOn>
+                        <updateRate>30.0</updateRate>
+                        <imageTopicName>image_raw</imageTopicName>
+                        <pointCloudTopicName>points</pointCloudTopicName>
+                        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+                        <cameraName>depth_cam</cameraName>
+                        <frameName>/base_link</frameName>
+                        <pointCloudCutoff>0.001</pointCloudCutoff>
+                        <distortionK1>0.0000000</distortionK1>
+                        <distortionK2>0.0000000</distortionK2>
+                        <distortionK3>0.0000000</distortionK3>
+                        <distortionT1>0.0000000</distortionT1>
+                        <distortionT2>0.0000000</distortionT2>
+                    </plugin>
+                    <always_on>true</always_on>
+                    <update_rate>30.0</update_rate>
+            </sensor>
+        </link>
+    </model>
+</sdf>
