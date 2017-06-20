@@ -29,35 +29,24 @@
       </visual>
       <sensor name="laser" type="ray">
         <pose>0 0 0.02 0 -1.570896 0</pose>
-        <update_rate>100</update_rate>
         <ray>
-          <scan>
-            <horizontal>
-              <samples>1</samples>
-              <resolution>1</resolution>
-              <min_angle>-0</min_angle>
-              <max_angle>0</max_angle>
-            </horizontal>
-          </scan>
           <range>
             <min>0.2</min>
             <max>14</max>
             <resolution>0.01</resolution>
           </range>
-          <noise>
-            <type>gaussian</type>
-            <mean>0.0</mean>
-            <stddev>0.01</stddev>
-          </noise>
         </ray>
 
         <always_on>1</always_on>
         
         <visualize>true</visualize>
 
-        <plugin name="gazebo_ros_teraranger_controller" filename="libgazebo_ros_laser.so">
-          <topicName>/terarangerone_sim</topicName>
+        <plugin name="gazebo_ros_teraranger_controller" filename="libgazebo_ros_range.so">
+          <topicName>/terarangerone</topicName>
           <frameName>base_range</frameName>
+          <radiation>infrared</radiation>
+          <updateRate>0</updateRate>
+          <gaussianNoise>0.01</gaussianNoise>
         </plugin>
       </sensor>
     </link>
