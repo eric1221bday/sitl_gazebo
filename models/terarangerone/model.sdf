@@ -31,7 +31,7 @@
         <pose>0 0 0.02 0 -1.570896 0</pose>
         <ray>
           <range>
-            <min>0.2</min>
+            <min>0.02</min>
             <max>14</max>
             <resolution>0.01</resolution>
           </range>
