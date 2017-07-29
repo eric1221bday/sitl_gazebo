@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3 FATAL_ERROR)
+cmake_policy(SET CMP0042 NEW)
 cmake_policy(SET CMP0048 NEW)
 cmake_policy(SET CMP0054 NEW)
 
@@ -32,6 +33,12 @@ if (BUILD_GSTREAMER_PLUGIN)
 endif()
 add_subdirectory( external/OpticalFlow OpticalFlow )
 set( OpticalFlow_LIBS "OpticalFlow" )
+
+# find ROS include directories for building against ROS mavlink version
+find_package(roscpp)
+if (roscpp_FOUND)
+   include_directories(${roscpp_INCLUDE_DIRS})
+endif()
 
 # see if catkin was invoked to build this
 if (CATKIN_DEVEL_PREFIX)
@@ -121,6 +128,7 @@ include_directories(
   /usr/local/include/OGRE
   /usr/local/include/OGRE/Paging
   ${GSTREAMER_INCLUDE_DIRS}
+  ../../mavlink/include
   )
 
 link_libraries(
@@ -173,7 +181,11 @@ set (msgs
   msgs/lidar.proto
   msgs/CommandMotorSpeed.proto
   msgs/MotorSpeed.proto
+<<<<<<< HEAD
   msgs/RotorWind.proto
+=======
+  #msgs/Wind.proto
+>>>>>>> upstream/master
   msgs/sonarSens.proto
 )
 PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ${msgs})
@@ -200,7 +212,7 @@ add_library(gazebo_opticalFlow_plugin SHARED src/gazebo_opticalFlow_plugin.cpp)
 target_link_libraries(gazebo_opticalFlow_plugin ${OpticalFlow_LIBS})
 add_library(gazebo_lidar_plugin SHARED src/gazebo_lidar_plugin.cpp)
 add_library(rotors_gazebo_mavlink_interface SHARED src/gazebo_mavlink_interface.cpp src/geo_mag_declination.cpp)
-add_library(rotors_gazebo_wind_plugin SHARED src/gazebo_wind_plugin.cpp)
+#add_library(rotors_gazebo_wind_plugin SHARED src/gazebo_wind_plugin.cpp)
 add_library(gazebo_geotagged_images_plugin SHARED src/gazebo_geotagged_images_plugin.cpp)
 add_library(gazebo_sonar_plugin SHARED src/gazebo_sonar_plugin.cpp)
 
@@ -212,7 +224,7 @@ set(plugins
   gazebo_opticalFlow_plugin
   gazebo_lidar_plugin
   rotors_gazebo_mavlink_interface
-  rotors_gazebo_wind_plugin
+  #rotors_gazebo_wind_plugin
   gazebo_geotagged_images_plugin
   gazebo_sonar_plugin
   )
