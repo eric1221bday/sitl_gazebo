@@ -215,22 +215,16 @@ void GeotaggedImagesPlugin::OnNewFrame(const unsigned char * image)
   image = this->camera_->GetImageData(0);
 #endif
 
-<<<<<<< HEAD
-=======
   if (!capture_ || storeIntervalSec_ == 0) {
     return;
   }
 
->>>>>>> upstream/master
 #if GAZEBO_MAJOR_VERSION >= 8
   common::Time currentTime = scene_->SimTime();
 #else
   common::Time currentTime = scene_->GetSimTime();
 #endif
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/master
   if (currentTime.Double() - lastImageTime_.Double() < storeIntervalSec_) {
     gzerr << "WARNING: TRIGGERED CAMERA TOO FAST!" << endl;
     return;

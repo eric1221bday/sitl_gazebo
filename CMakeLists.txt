@@ -181,11 +181,7 @@ set (msgs
   msgs/lidar.proto
   msgs/CommandMotorSpeed.proto
   msgs/MotorSpeed.proto
-<<<<<<< HEAD
-  msgs/RotorWind.proto
-=======
   #msgs/Wind.proto
->>>>>>> upstream/master
   msgs/sonarSens.proto
 )
 PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ${msgs})
