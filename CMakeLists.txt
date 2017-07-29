@@ -35,9 +35,9 @@ add_subdirectory( external/OpticalFlow OpticalFlow )
 set( OpticalFlow_LIBS "OpticalFlow" )
 
 # find ROS include directories for building against ROS mavlink version
-find_package(roscpp)
-if (roscpp_FOUND)
-   include_directories(${roscpp_INCLUDE_DIRS})
+find_package(mavlink)
+if (mavlink_FOUND)
+   include_directories(${mavlink_INCLUDE_DIRS})
 endif()
 
 # see if catkin was invoked to build this
