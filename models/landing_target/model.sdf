@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="landing_target">
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.42 0.584 .1</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <box>
+            <size>0.594 0.42 .1</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://landing_target/materials/scripts</uri>
+            <uri>model://landing_target/materials/textures</uri>
+            <name>vrc/target</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
