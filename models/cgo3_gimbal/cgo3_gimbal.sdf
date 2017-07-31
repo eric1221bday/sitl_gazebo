@@ -313,6 +313,12 @@
         </ode>
       </physics>
     </joint>
+    <plugin name='gimbal_controller' filename='librotors_gazebo_gimbal_controller_plugin.so'>
+      <joint_yaw>cgo3_gimbal::cgo3_vertical_arm_joint</joint_yaw>
+      <joint_roll>cgo3_gimbal::cgo3_horizontal_arm_joint</joint_roll>
+      <joint_pitch>cgo3_gimbal::cgo3_camera_joint</joint_pitch>
+      <imu>camera_imu</imu>
+    </plugin> 
     <static>0</static>
   </model>
 </sdf>
