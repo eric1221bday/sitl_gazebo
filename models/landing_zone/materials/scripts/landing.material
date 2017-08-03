@@ -1,0 +1,16 @@
+material vrc/landing
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture landing_site_2_max.jpg
+				filtering anistropic
+				max_anisotropy 16
+				scale 1 1
+			}
+		}
+	}
+}
