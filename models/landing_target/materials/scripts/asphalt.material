@@ -4,10 +4,6 @@ material vrc/target
 	{
 		pass
 		{
-			ambient 0.5 0.5 0.5 1.0
-			diffuse 0.5 0.5 0.5 1.0
-			specular 0.2 0.2 0.2 1.0 20
-
 			texture_unit
 			{
 				texture target_checker.png

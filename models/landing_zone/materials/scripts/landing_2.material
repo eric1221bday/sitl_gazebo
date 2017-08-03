@@ -1,0 +1,14 @@
+material vrc/landing_2
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture landing_zone_tennesee.tiff
+				scale 1 1
+			}
+		}
+	}
+}
