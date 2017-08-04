@@ -6,7 +6,7 @@ material vrc/target
 		{
 			texture_unit
 			{
-				texture target_checker.png
+				texture target.png
 				filtering anistropic
 				max_anisotropy 16
 				scale 1 1
