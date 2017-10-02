@@ -192,6 +192,7 @@ class GazeboMavlinkInterface : public ModelPlugin {
   common::Time last_actuator_time_;
 
   double gps_update_interval_;
+  double gps_delay_;
   double lat_rad;
   double lon_rad;
   double ev_update_interval_;
@@ -218,11 +219,11 @@ class GazeboMavlinkInterface : public ModelPlugin {
   struct sockaddr_in _srcaddr_2;  ///< MAVROS
 
   //so we dont have to do extra callbacks
-  double optflow_xgyro;
-  double optflow_ygyro;
-  double optflow_zgyro;
+  math::Vector3 optflow_gyro{};
   double optflow_distance;
   double sonar_distance;
+
+  mavlink_hil_gps_t hil_gps_msg_;
 
   in_addr_t mavlink_addr_;
   int mavlink_udp_port_;
